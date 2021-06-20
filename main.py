@@ -1,7 +1,7 @@
 import pygame
 from solver import SudokuSolver
 from GUI import Scoreboard, SudokuBoard
-from constants import WHITE, BLACK, FPS, MAX_STRIKES, WIDTH, HEIGHT, ADD_WIDTH, ASCII_0, SIZE
+from constants import WHITE, BLACK, FPS, MAX_STRIKES, WIDTH, HEIGHT, ADD_WIDTH, ASCII_0, NUM_0, SIZE
 
 
 def draw(win, board, scoreboard):
@@ -41,7 +41,7 @@ def win_draw(win):
 
 def start_game(solver, board, scoreboard, blanks=51):
     solver.generate_board(blanks)
-    #print(f'Moves: {len(solver.solve_moves)}')
+    # print(f'Moves: {len(solver.solve_moves)}')
     board.save_board(solver.board)
     scoreboard.set_default()
 
@@ -64,6 +64,16 @@ def confirm_move(board, solver, scoreboard, moves, win, pos):
         board.board[y][x].temp = 0
 
 
+def simulation(board, solver, sim_move):
+    y, x, num = solver.solve_moves[sim_move]
+    board.board[y][x].num = num
+    board.select((y, x))
+    if num == 0:
+        board.board[y][x].success = False
+    else:
+        board.board[y][x].success = True
+
+
 def main():
     win = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('Sudoku')
@@ -77,8 +87,19 @@ def main():
     run = True
     clock = pygame.time.Clock()
     moves = []
+    sim = False
+    sim_move = -1
     while run:
         clock.tick(FPS)
+
+        if sim:
+            sim_move += 1
+            simulation(board, solver, sim_move)
+            if sim_move == len(solver.solve_moves) - 1:
+                sim = False
+                sim_move = 0
+                win_draw(win)
+                start_game(solver, board, scoreboard)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -87,7 +108,12 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key >= pygame.K_1 and event.key <= pygame.K_9:
                     key = event.key - ASCII_0
-                    # print(f'Pressed num: {key}')
+                    y, x = board.selected
+                    if board.board[y][x].num == 0:
+                        board.board[y][x].temp = key
+
+                if event.key >= pygame.K_KP1 and event.key <= pygame.K_KP9:
+                    key = event.key - NUM_0
                     y, x = board.selected
                     if board.board[y][x].num == 0:
                         board.board[y][x].temp = key
@@ -111,19 +137,21 @@ def main():
                                 confirm_move(
                                     board, solver, scoreboard, moves, win, (y, x))
 
-                if event.key == pygame.K_s:
-                    for y, x, num in solver.solve_moves:
-                        board.board[y][x].num = num
-                        board.select((y, x))
-                        if num == 0:
-                            board.board[y][x].success = False
-                        else:
-                            board.board[y][x].success = True
-                        draw(win, board, scoreboard)
-                    win_draw(win)
-                    start_game(solver, board, scoreboard)
-
                 if event.key == pygame.K_SPACE:
+                    if not sim:
+                        sim = True
+                    elif sim:
+                        sim = False
+                        continue
+                    sim_move += 1
+                    simulation(board, solver, sim_move)
+                    if sim_move == len(solver.solve_moves) - 1:
+                        sim = False
+                        sim_move = 0
+                        win_draw(win)
+                        start_game(solver, board, scoreboard)
+
+                if event.key == pygame.K_e:
                     for y, x, num in solver.solve_moves:
                         board.board[y][x].num = num
                     draw(win, board, scoreboard)
@@ -133,22 +161,22 @@ def main():
                 if event.key == pygame.K_r:
                     start_game(solver, board, scoreboard)
 
-                if event.key == pygame.K_UP:
+                if event.key in (pygame.K_UP, pygame.K_w):
                     y, x = board.selected
                     if y - 1 >= 0:
                         board.select((y - 1, x))
 
-                if event.key == pygame.K_DOWN:
+                if event.key in (pygame.K_DOWN, pygame.K_s):
                     y, x = board.selected
                     if y + 1 < SIZE:
                         board.select((y + 1, x))
 
-                if event.key == pygame.K_LEFT:
+                if event.key in (pygame.K_LEFT, pygame.K_a):
                     y, x = board.selected
                     if x - 1 >= 0:
                         board.select((y, x - 1))
 
-                if event.key == pygame.K_RIGHT:
+                if event.key in (pygame.K_RIGHT, pygame.K_d):
                     y, x = board.selected
                     if x + 1 < SIZE:
                         board.select((y, x + 1))

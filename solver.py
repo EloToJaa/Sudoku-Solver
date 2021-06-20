@@ -122,7 +122,7 @@ class SudokuSolver:
         prev_board = deepcopy(self.board)
         self.solve()
         self.board = deepcopy(prev_board)
-        if len(self.solve_moves) < 1000 or len(self.solve_moves) > 3000:
+        if len(self.solve_moves) > 1500:
             self.generate_board(blanks)
 
     def print_board(self):

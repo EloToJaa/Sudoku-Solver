@@ -90,7 +90,6 @@ class Cube:
                             x_gap, self.y * self.draw_size + y_gap))
 
         if self.success:
-            #pygame.draw.rect( win, GREEN, (self.x * self.draw_size, self.y * self.draw_size, self.draw_size, self.draw_size), 3)
             x_gap, y_gap = 55, 18
             pygame.draw.line(win, GREEN, (self.x * self.draw_size + x_gap, (self.y + 1) * self.draw_size - y_gap),
                              ((self.x + 1) * self.draw_size - x_gap, (self.y + 1) * self.draw_size - y_gap), 5)
