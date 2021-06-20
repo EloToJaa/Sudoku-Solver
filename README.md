@@ -2,7 +2,8 @@
 
 This is a GUI sudoku solver that uses backtracking algorithm. It includes GUI version and the implementation of backtracking algorithm.
 
-Run main.py to play
+The objective of the game is to enter correct numbers to blank cubes.
+You can download the game in releases.
 
 
 # Keys
