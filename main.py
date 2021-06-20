@@ -12,7 +12,6 @@ def draw(win, board, scoreboard):
 
 
 def lose_draw(win):
-    # pygame.time.delay(5000)
     win.fill(WHITE)
     font = pygame.font.SysFont('comicsans', 60)
     text = font.render('PRZEGRANA', 1, BLACK)
@@ -41,7 +40,6 @@ def win_draw(win):
 
 def start_game(solver, board, scoreboard, blanks=51):
     solver.generate_board(blanks)
-    # print(f'Moves: {len(solver.solve_moves)}')
     board.save_board(solver.board)
     scoreboard.set_default()
 
@@ -97,7 +95,7 @@ def main():
             simulation(board, solver, sim_move)
             if sim_move == len(solver.solve_moves) - 1:
                 sim = False
-                sim_move = 0
+                sim_move = -1
                 win_draw(win)
                 start_game(solver, board, scoreboard)
 
@@ -147,7 +145,7 @@ def main():
                     simulation(board, solver, sim_move)
                     if sim_move == len(solver.solve_moves) - 1:
                         sim = False
-                        sim_move = 0
+                        sim_move = -1
                         win_draw(win)
                         start_game(solver, board, scoreboard)
 
@@ -155,10 +153,14 @@ def main():
                     for y, x, num in solver.solve_moves:
                         board.board[y][x].num = num
                     draw(win, board, scoreboard)
+                    sim = False
+                    sim_move = -1
                     win_draw(win)
                     start_game(solver, board, scoreboard)
 
                 if event.key == pygame.K_r:
+                    sim = False
+                    sim_move = -1
                     start_game(solver, board, scoreboard)
 
                 if event.key in (pygame.K_UP, pygame.K_w):

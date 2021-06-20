@@ -111,7 +111,6 @@ class SudokuSolver:
                 self.board[i+j][i+j] = nums[j]
 
         self.solve()
-        # self.print_board()
 
         positions = random(range(81), blanks)
         for pos in positions:
@@ -124,20 +123,6 @@ class SudokuSolver:
         self.board = deepcopy(prev_board)
         if len(self.solve_moves) > 1500:
             self.generate_board(blanks)
-
-    def print_board(self):
-        for i in range(self.SIZE):
-            if i % 3 == 0:
-                print('-' * 25)
-            for j in range(self.SIZE):
-                if j % 3 == 0:
-                    print('|', end=' ')
-                print(self.board[i][j], end=' ')
-                if j == self.SIZE - 1:
-                    print('|', end=' ')
-            print()
-            if i == self.SIZE - 1:
-                print('-' * 25)
 
     def count_blanks(self):
         blanks = 0

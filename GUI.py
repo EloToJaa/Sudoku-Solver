@@ -54,7 +54,6 @@ class SudokuBoard:
         y, x = pos
         self.board[y][x].selected = True
         self.selected = (y, x)
-        # print(f'Selected {self.selected}, num: {self.board[y][x].num}')
 
     def clear(self):
         for y in range(self.CUBES):
